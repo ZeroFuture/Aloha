@@ -22,7 +22,7 @@ module.exports = function(_, passport, validator) {
                 [
                     validator.check('username').notEmpty().isLength({min: 5}).withMessage('Username must be at least 5 characters.'),
                     validator.check('email').isEmail().withMessage('Email is invalid'),
-                    validator.check('password').notEmpty().withMessage('Password must be at least 5 characters.'),
+                    validator.check('password').notEmpty().isLength({min: 5}).withMessage('Password must be at least 5 characters.'),
                 ], 
                 this.postValidation, 
                 this.postSignUp,

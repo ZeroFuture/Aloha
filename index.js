@@ -13,7 +13,7 @@ const container = require('./container');
 require('./passport/passport-local');
 
 
-container.resolve(function(_, userController, homeController) {
+container.resolve(function(_, userController, homeController, groupChatController, privateChatController) {
     mongoose.set('useFindAndModify', false);
     mongoose.set('useCreateIndex', true);
     mongoose.Promise = global.Promise;
@@ -28,7 +28,7 @@ container.resolve(function(_, userController, homeController) {
 
     app.use(express.static('public'));
     app.use(cookieParser());
-    app.options('*', cors())
+    app.options('*', cors());
     app.use(
         cors({
           origin: "http://localhost:3000", // allow to server to accept request from different origin
@@ -45,6 +45,7 @@ container.resolve(function(_, userController, homeController) {
         saveUninitialized: false,
         store: new MongoStore({mongooseConnection: mongoose.connection})
     }));
+
     
     app.use(passport.initialize());
     app.use(passport.session());
@@ -53,6 +54,8 @@ container.resolve(function(_, userController, homeController) {
 
     userController.route(router);
     homeController.route(router);
+    // groupChatController.route(router);
+    // privateChatController.route(router);
 
     app.use(router);
 });
