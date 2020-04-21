@@ -1,8 +1,5 @@
 'use strict';
 
-
-const HOME_PAGE_URL = "http://localhost:3000/home";
-
 module.exports = function(_, passport, validator) {
     return {
         route: function(router) {
@@ -17,7 +14,6 @@ module.exports = function(_, passport, validator) {
                     res.send("user authenticated");
                 }
             );
-
             router.post('/signup',
                 [
                     validator.check('username').notEmpty().isLength({min: 5}).withMessage('Username must be at least 5 characters.'),
@@ -46,6 +42,7 @@ module.exports = function(_, passport, validator) {
                 return next();
             }
         },
+
         postLogin: passport.authenticate('local.login'),
         postSignUp: passport.authenticate('local.signup'),
     }
