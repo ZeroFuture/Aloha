@@ -13,7 +13,7 @@ const container = require('./container');
 require('./passport/passport-local');
 
 
-container.resolve(function(_, userController, homeController, groupChatController, privateChatController) {
+container.resolve(function(_, userController, channelController) {
     mongoose.set('useFindAndModify', false);
     mongoose.set('useCreateIndex', true);
     mongoose.Promise = global.Promise;
@@ -53,9 +53,7 @@ container.resolve(function(_, userController, homeController, groupChatControlle
     app.locals._ = _;
 
     userController.route(router);
-    homeController.route(router);
-    // groupChatController.route(router);
-    // privateChatController.route(router);
+    channelController.route(router);
 
     app.use(router);
 });

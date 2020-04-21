@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const channel = mongoose.Schema({
-    id: {type: String, default: ''},
     name: {type: String, default: ''},
     members: [{
         userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
@@ -9,7 +8,9 @@ const channel = mongoose.Schema({
     }],
     isGroupChannel: {type: Boolean, default: true},
     messages: [{
-        message: {type: mongoose.Schema.Types.ObjectId, ref: 'Message' },
+        content: {type: String},
+        sender: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+        timestamp: {type: Date, default: Date.now},
     }]
 });
 

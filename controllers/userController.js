@@ -3,7 +3,7 @@
 module.exports = function(_, passport, validator) {
     return {
         route: function(router) {
-            router.post('/login', 
+            router.post('/user/login', 
                 [
                     validator.check('email').isEmail().withMessage('Email is invalid'),
                     validator.check('password').notEmpty().withMessage('Password must be at least 5 characters.'),
@@ -11,10 +11,10 @@ module.exports = function(_, passport, validator) {
                 this.postValidation, 
                 this.postLogin,
                 function(req, res) {
-                    res.send("user authenticated");
+                    res.json(req.user);
                 }
             );
-            router.post('/signup',
+            router.post('/user/signup',
                 [
                     validator.check('username').notEmpty().isLength({min: 5}).withMessage('Username must be at least 5 characters.'),
                     validator.check('email').isEmail().withMessage('Email is invalid'),
@@ -23,7 +23,7 @@ module.exports = function(_, passport, validator) {
                 this.postValidation, 
                 this.postSignUp,
                 function(req, res) {
-                    res.send("user created");
+                    res.json(req.user);
                 }
             );
         },
