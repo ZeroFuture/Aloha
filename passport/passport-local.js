@@ -19,15 +19,24 @@ passport.use('local.signup', new LocalStrategy({
     passwordField: 'password',
     passReqToCallback: true,
 }, (req, email, password, done) => {
-    console.log(req.body);
     User.findOne({'email': email}, (err, user) => {
         if (err) {
             return done(err);
         }
         if (user) {
-            console.log('user already exist');
+            console.log('user with this email already exist');
             return done(null, false);
         }
+
+        User.findOne({'username': req.body.username}, (err, user) => {
+            if (err) {
+                return done(err);
+            }
+            if (user) {
+                console.log('user with this username already exist');
+                return done(null, false);
+            }
+        });
         
         const newUser = new User();
         newUser.username = req.body.username;
