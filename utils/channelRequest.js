@@ -30,20 +30,28 @@ module.exports = function(User, Channel) {
 
         joinChannel: function(req, res) {
             const id = req.params.id;
-            Channel.findOne({'_id': id}, (err, channel) => {
+            Channel.findOne({
+                '_id': id
+            }, (err, channel) => {
                 if (err) {
                     res.send("error get channel");
                 } else if (channel) {
-                    const exisitngMember = channel.members.map(member => member.userId).filter(id => id === req.user._id);
-
-                    if (exisitngMember) {
+                    if( !channel.isGroupChannel) {
+                        res.send("Cannot join private channel");
+                        return;
+                    }
+                    const existingMember = channel.members.filter((member) => member.userId.equals(req.user._id));
+                    if (existingMember.length > 0) {
+                        console.log(JSON.stringify(existingMember, null, 4));
                         res.send("user is already in the channel");
                     } else {
                         const createdChannel = {channelId: channel._id, channelName: channel.name};
-                        User.findOneAndUpdate({username: req.user.username}, {$push: {channelList: createdChannel}}, function(error, user) {
+                        User.findOneAndUpdate({
+                            username: req.user.username,
+                            "channelList.channelId": {$ne: id} // cannot add if it's already have this channel
+                        }, {$push: {channelList: createdChannel}}, function(error, user) {
                             if (error) {
                                 res.send('failed add channel to the user');
-                                return;
                             }
                         });
 

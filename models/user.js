@@ -6,10 +6,13 @@ const user = mongoose.Schema({
     email: {type: String, unique: true},
     password: {type: String, default: ''},
     sentRequest: [{
-        userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
         username: {type: String, default: ''}
     }],
     receivedRequest: [{
+        userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+        username: {type: String, default: ''}
+    }],
+    friendList: [{
         userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
         username: {type: String, default: ''}
     }],

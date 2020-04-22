@@ -1,140 +1,49 @@
-module.exports = function(async, User, Message){
+module.exports = function(async, User, Channel){
     return {
-        PostRequest: function(req, res, url){
-            async.parallel([
-                // add request to receiver entry
-                function(callback){
-                    if(req.body.receiverName){
-                        User.updateOne({
-                                'username': req.body.receiverName,
-                                'request.userId': {$ne: req.user._id},
-                                'friendsList.friendId': {$ne: req.user._id}
-                            },
-                            {
-                                $push: {request: {
-                                        userId: req.user._id,
-                                        username: req.user.username
-                                    }},
-                                $inc: {totalRequest: 1}
-                            }, (err, count) => {
-                                callback(err, count);
-                            })
-                    }
-                },
-                // add request to requester entry
-                function(callback){
-                    if(req.body.receiverName){
-                        User.updateOne({
-                                'username': req.user.username,
-                                'sentRequest.username': {$ne: req.body.receiverName}
-                            },
-                            {
-                                $push: {sentRequest: {
-                                        username: req.body.receiverName
-                                    }}
-                            }, (err, count) => {
-                                callback(err, count);
-                            })
-                    }
-                }
-            ], (err, results) => {
-                res.redirect(url); // home
+        createChannel: function(req, res) {
+            const newChannel = new Channel();
+            newChannel.name = req.body.senderName+ ', ' + req.user.username; //not current username
+            newChannel.members.push({
+                userId: req.user._id,
+                username: req.user.username
             });
+            newChannel.members.push({
+                userId: req.body.senderId,
+                username: req.body.senderName
+            })
+            newChannel.isGroupChannel = false;
 
-            async.parallel([
-                //This function is updated for the receiver of the friend request when it is accepted
-                function(callback){
-                    if(req.body.senderId){
-                        User.updateOne({
-                            '_id': req.user._id,
-                            'friendsList.friendId': {$ne: req.body.senderId}
-                        }, {
-                            $push: {friendsList: {
-                                    friendId: req.body.senderId,
-                                    friendName: req.body.senderName
-                                }},
-                            $pull: {request: {
-                                    userId: req.body.senderId,
-                                    username: req.body.senderName
-                                }},
-                            $inc: {totalRequest: -1}
-                        }, (err, count) => {
-                            callback(err, count);
-                        });
-                    }
-                },
-
-                //This function is updated for the sender of the friend request when it is accepted by the receiver
-                function(callback){
-                    if(req.body.senderId){
-                        User.updateOne({
-                            '_id': req.body.senderId,
-                            'friendsList.friendId': {$ne: req.user._id}
-                        }, {
-                            $push: {friendsList: {
-                                    friendId: req.user._id,
-                                    friendName: req.user.username
-                                }},
-                            $pull: {sentRequest: {
-                                    username: req.user.username
-                                }},
-                        }, (err, count) => {
-                            callback(err, count);
-                        });
-                    }
-                },
-
-                // remove request in receiver
-                function(callback){
-                    if(req.body.user_Id){
-                        User.updateOne({
-                            '_id': req.user._id,
-                            'request.userId': {$eq: req.body.user_Id}
-                        }, {
-                            $pull: {request: {
-                                    userId: req.body.user_Id
-                                }},
-                            $inc: {totalRequest: -1}
-                        }, (err, count) => {
-                            callback(err, count);
-                        });
-                    }
-                },
-
-                // remove send request in requester
-                function(callback){
-                    if(req.body.user_Id){
-                        User.updateOne({
-                            '_id': req.body.user_Id,
-                            'sentRequest.username': {$eq: req.user.username}
-                        }, {
-                            $pull: {sentRequest: {
-                                    username: req.user.username
-                                }}
-                        }, (err, count) => {
-                            callback(err, count);
-                        });
-                    }
-                },
-
-                // update the status of message as read
-                function(callback){
-                    if(req.body.chatId){
-                        Message.updateOne({
-                                '_id': req.body.chatId
-                            },
-                            {
-                                "isRead": true
-                            }, (err, done) => {
-                                callback(err, done);
-                            })
-                    }
+            newChannel.save((error) => {
+                if(error) {
+                    console.log(error.message);
+                    res.send({
+                        description: "fail to create new channel ",
+                        message: error.message
+                    })
+                    return;
                 }
+            })
 
-
-            ], (err, results) => {
-                res.redirect(url);
+            const createdChannel = {
+                channelId: newChannel._id,
+                channelName: newChannel.name
+            };
+            User.findOneAndUpdate({username: req.user.username}, {$push: {channelList: createdChannel}}, function(error, user) {
+                if (error) {
+                    console.log(error);
+                    res.send(`failed add channel to the user, userId=${req.user._id}`);
+                    return;
+                }
             });
-        }
+            User.findOneAndUpdate({username: req.body.senderName}, {$push: {channelList: createdChannel}}, function(error, user) {
+                if (error) {
+                    console.log(error);
+                    res.send(`failed add channel to the user, userId=${req.body.senderId}`);
+                    return;
+                }
+            });
+            res.json(newChannel);
+            return createdChannel
+        },
     }
 }
