@@ -14,25 +14,15 @@ import Error from './Error';
 export default function App() {
   return (
     <Router>
-      <div>
-        <Switch>
-          <Route path="/home">
-            <Home />
-          </Route>
-          <Route path="/signup">
-            <Signup />
-          </Route>
-          <Route path="/login">
-            <Login />
-          </Route>
-          <Route path="/error">
-            <Error />
-          </Route>
-          <Route path="/">
-            <Redirect to="/login" />
-          </Route>
-        </Switch>
-      </div>
+      <Switch>
+        <Route path="/home" render={(props) => <Home {...props} />} />
+        <Route path="/signup" render={(props) => <Signup {...props} />} />
+        <Route path="/login" render={(props) => <Login {...props} />} />
+        <Route path="/error" render={(props) => <Error {...props} />} />
+        <Route path="/">
+          <Redirect to="/login" />
+        </Route>
+      </Switch>
     </Router>
   );
 }

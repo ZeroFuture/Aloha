@@ -18,7 +18,8 @@ const user = mongoose.Schema({
     }],
     channelList: [{
         channelId: {type: mongoose.Schema.Types.ObjectId, ref: 'Channel'},
-        channelName: {type: String, default: ''}
+        channelName: {type: String, default: ''},
+        isGroupChannel: {type: Boolean, default: true},
     }],
 });
 

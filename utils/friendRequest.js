@@ -26,7 +26,8 @@ module.exports = function(async, User, Channel){
 
             const createdChannel = {
                 channelId: newChannel._id,
-                channelName: newChannel.name
+                channelName: newChannel.name,
+                isGroupChannel: newChannel.isGroupChannel
             };
             User.findOneAndUpdate({username: req.user.username}, {$push: {channelList: createdChannel}}, function(error, user) {
                 if (error) {

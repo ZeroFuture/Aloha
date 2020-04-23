@@ -10,6 +10,7 @@ const passport = require('passport');
 const socketIO = require('socket.io');
 const router = require('express-promise-router')();
 const container = require('./container');
+const Channel = require('./models/channel');
 require('./passport/passport-local');
 
 
@@ -22,13 +23,15 @@ container.resolve(function(_, userController, channelController, friendControlle
     const app = express();
     const server = http.createServer(app);
     const io = socketIO(server);
+    const p2p = require('socket.io-p2p-server').Server;
+    io.use(p2p);
+
     server.listen(process.env.PORT || 8080, function(){
         console.log('Listening on port 8080');
     });
 
     app.use(express.static('public'));
     app.use(cookieParser());
-    app.options('*', cors());
     app.use(
         cors({
           origin: "http://localhost:3000", // allow to server to accept request from different origin
@@ -51,6 +54,9 @@ container.resolve(function(_, userController, channelController, friendControlle
     app.use(passport.session());
     
     app.locals._ = _;
+
+    require('./socket/channelSocket')(io, Channel);
+    require('./socket/userSocket')(io);
 
     userController.route(router);
     channelController.route(router);

@@ -27,5 +27,4 @@ module.exports = function(_, Channel, channelRequest) {
             });
         }
     }
-
 }

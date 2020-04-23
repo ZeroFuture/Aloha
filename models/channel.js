@@ -9,7 +9,8 @@ const channel = mongoose.Schema({
     isGroupChannel: {type: Boolean, default: true},
     messages: [{
         content: {type: String},
-        sender: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+        senderId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+        senderName: {type: String},
         timestamp: {type: Date, default: Date.now},
     }]
 });
