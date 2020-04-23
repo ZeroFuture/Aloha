@@ -7,6 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
     chatBox: {
         height: "60vh",
+        overflowY: "auto"
     },
 }));
 

@@ -148,8 +148,14 @@ export default function Home(props) {
         }
     };
 
+    const onKeyPress = (event) => {
+        if (event.key === "Enter") {
+            sendMessage();
+        }
+    };
+
     if (!props.location || !props.location.state || !props.location.state.user) {
-        return <Redirect to='/error' />
+        return <Redirect to='/error' />;
     } else {
         return (
             <Grid container className={classes.root} spacing={2}>
@@ -202,8 +208,10 @@ export default function Home(props) {
                         </Grid>
                         <Grid item xs={6} md={6}>
                             <TextField label="message" 
+                            value={text}
                             className={classes.searchBox} 
                             onChange={(event) => setText(event.target.value)}
+                            onKeyPress={(event) => onKeyPress(event)}
                             />
                         </Grid>
                         <Grid item xs={2} md={2}>

@@ -9,14 +9,6 @@ module.exports = function(User, Channel) {
             const creator = {userId: req.user._id, username: req.user.username};
             newChannel.members.push(creator);
 
-            newChannel.save((error) => {
-                if (error) {
-                    console.log(error);
-                    res.send("error creating new channel");
-                    return;
-                }
-            });
-
             const createdChannel = {channelId: newChannel._id, channelName: newChannel.name, isGroupChannel: newChannel.isGroupChannel};
             User.findOneAndUpdate({username: req.user.username}, {$push: {channelList: createdChannel}}, function(error, user) {
                 if (error) {
@@ -26,7 +18,15 @@ module.exports = function(User, Channel) {
                 }
             });
 
-            res.json(newChannel);
+            newChannel.save((error) => {
+                if (error) {
+                    console.log(error);
+                    res.send("error creating new channel");
+                    return;
+                } else {
+                    res.json(newChannel);
+                }
+            });
         },
 
         joinChannel: function(req, res) {
