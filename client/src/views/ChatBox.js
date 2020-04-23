@@ -15,15 +15,10 @@ export default function ChatBox(props) {
     const classes = useStyles();
     const members = props.channel ? props.channel.members.map(member => member.username).join(', ') : [];
     var index = 1;
-    const messages = props.channel ? props.channel.messages.map(message => {
-        // console.log(message.content);
-        // console.log(index);
-        // console.log(message.senderName);
+    const renderedMessages = props.channel ? props.channel.messages.map(message => {
         return new Message({id: index++, message: message.content, senderName: message.senderName});
-        // return <ChatBubble message={message}></ChatBubble>
     }) : [];
-
-    console.log(messages);
+    console.log(props.channel);
     return (
         <Grid className={classes.chatBox}>
             <Grid item>
@@ -34,7 +29,7 @@ export default function ChatBox(props) {
             <Grid item>
                 <ChatFeed
                     hasInputField={false}
-                    messages={messages}
+                    messages={renderedMessages}
                     showSenderName
                     bubbleStyles={
                         {

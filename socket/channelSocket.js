@@ -2,19 +2,27 @@
 
 module.exports = function(io, Channel) {
     io.on('connection', (socket) => {
-        socket.on('joinChannel', (channelId, callback) => {
-            socket.join(channelId);
-            callback;
+        socket.on('joinRoom', (room) => {
+            console.log(`joining room ${room}`);
+            socket.join(room);
         });
 
-        socket.on('createMessage', (message, callback) => {
-            const userId = message.userId;
+        socket.on('leaveRoom', (room) => {
+            console.log(`leaving room ${room}`);
+            socket.leave(room);
+        });
+
+        socket.on('createMessage', (json) => {
+            const message = json.message;
+            const channelId = json.channelId;
+
+            const senderId = message.senderId;
+            const senderName = message.senderName;
             const content = message.content;
-            const channelId = message.channelId;
-            const newMessage = {content: content, sender: userId, timestamp: Date.now()};
+            const newMessage = {content: content, senderId: senderId, senderName: senderName, timestamp: Date.now()};
             Channel.findOneAndUpdate({'_id': channelId}, {$push: {messages: newMessage}});
-            io.to(channelId).emit('newMessage', newMessage);
-            callback;
+            console.log(`sending to room ${channelId}`);
+            io.emit('newMessage' + channelId, {message: newMessage, channel: channelId});
         });
     });
 }

@@ -24,7 +24,7 @@ container.resolve(function(_, userController, channelController, friendControlle
     const server = http.createServer(app);
     const io = socketIO(server);
     const p2p = require('socket.io-p2p-server').Server;
-    io.use(p2p);
+    // io.use(p2p);
 
     server.listen(process.env.PORT || 8080, function(){
         console.log('Listening on port 8080');

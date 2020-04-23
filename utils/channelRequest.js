@@ -22,7 +22,6 @@ module.exports = function(User, Channel) {
                 if (error) {
                     console.log(error);
                     res.send("error creating new channel");
-                    return;
                 } else {
                     res.json(newChannel);
                 }

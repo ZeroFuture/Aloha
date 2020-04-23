@@ -81,31 +81,52 @@ export default function Home(props) {
     const [channelInfo, setChannelInfo] = useState(null);
     const [text, setText] = useState('');
 
-    useEffect(() => {
-        const socket = socketIOClient(ENDPOINT);
-        const P2P = require('socket.io-p2p');
-        const p2p = new P2P(socket);
+    const socket = socketIOClient(ENDPOINT);
+    // const P2P = require('socket.io-p2p');
+    // const p2p = new P2P(socket);
+    const p2p = socket;
 
+    useEffect(() => {
         if (!user && !!props.location && !!props.location.state && !!props.location.state.user) {
             setUser(props.location.state.user);
             if (!channels.length && props.location.state.user.channelList) {
                 setChannels(props.location.state.user.channelList);
             }
-            // p2p.join(props.location.state.user.username);
+            // socket.on('connect', function() {
+            //     socket.emit('joinRoom', props.location.state.user.username);
+            // });
         }
-        
+    }, [props]);
+
+    useEffect(() => {
+        if (selectedChannel && selectedChannel.channelId) {
+            socket.on('newMessage' + selectedChannel.channelId, (json) => {
+                const message = json.message;
+                const channelId = json.channel;
+                if (channelId === selectedChannel.channelId) {
+                    if (channelInfo && channelInfo.messages) {
+                        channelInfo.messages.push(message);
+                        setChannelInfo(channelInfo);
+                    }
+                }
+            });
+        }
+    }, [selectedChannel, channelInfo]);
+
+    useEffect(() => {
         if (selectedChannel) {
             server.get(`/channel/${selectedChannel.channelId}`).then((res) => {
                 if(res.status >= 400) throw new Error(); 
                 if (res.data.name) {
                     setChannelInfo(res.data);
                 }
+                console.log("get channel");
             }).catch((error) => {
                 console.log(error);
             });
-            p2p.emit('joinChannel', (selectedChannel, () => {
-                console.log('successfully joined channel');
-            }));
+            socket.on('connect', function() {
+                socket.emit('joinRoom', selectedChannel.channelId);
+            });
         }
     }, [selectedChannel]);
 
@@ -139,12 +160,13 @@ export default function Home(props) {
             }).then((res) => {
                 if(res.status >= 400) throw new Error(); 
                 if (res.data) {
-                    setChannelInfo(res.data);
                     setText('');
                 }
             }).catch((error) => {
                 console.log(error);
             });
+            const newMessage = {senderId: user._id, senderName: user.username, content: text};
+            p2p.emit('createMessage', {message: newMessage, channelId: selectedChannel.channelId});
         }
     };
 
@@ -170,6 +192,7 @@ export default function Home(props) {
                             <ChannelList 
                                 channels={channels} 
                                 onChannelSelect={(channel) => {
+                                    socket.emit('leaveRoom', channel.channelId);
                                     setSelectedChannel(channel);
                                 }}
                             />
