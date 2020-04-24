@@ -9,7 +9,7 @@ const simpleDependecies = [
     ['validator', 'express-validator'],
     ['async', 'async'],
     ['User', './models/user'],
-    ['Channel', './models/channel']
+    ['Channel', './models/channel'],
 ];
 
 simpleDependecies.forEach(function(val){

@@ -11,7 +11,6 @@ module.exports = function(_, async, User, friendRequest) {
                 // add request to receiver entry in user table.
                 function(callback) {
                     if(req.body.receiverName) {
-                        console.log()
                         User.updateOne({
                             'username': req.body.receiverName,
                             'receivedRequest.userId': {$ne: req.user._id}, // duplicated request
