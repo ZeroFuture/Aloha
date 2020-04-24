@@ -2,7 +2,7 @@ module.exports = function(async, User, Channel){
     return {
         createChannel: function(req, res) {
             const newChannel = new Channel();
-            newChannel.name = req.body.senderName+ ', ' + req.user.username; //not current username
+            newChannel.name = req.body.senderName + ', ' + req.user.username; //not current username
             newChannel.members.push({
                 userId: req.user._id,
                 username: req.user.username

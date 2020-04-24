@@ -10,7 +10,6 @@ const passport = require('passport');
 const socketIO = require('socket.io');
 const router = require('express-promise-router')();
 const container = require('./container');
-const Channel = require('./models/channel');
 require('./passport/passport-local');
 
 
@@ -55,8 +54,7 @@ container.resolve(function(_, userController, channelController, friendControlle
     
     app.locals._ = _;
 
-    require('./socket/channelSocket')(io, Channel);
-    require('./socket/userSocket')(io);
+    require('./socket/socketIO')(io);
 
     userController.route(router);
     channelController.route(router);
