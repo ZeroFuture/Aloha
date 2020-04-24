@@ -239,6 +239,10 @@ export const Home = (props) => {
         }
     };
 
+    const logout = () => {
+        props.history.push("/login");
+    }
+
     const onKeyPress = (event) => {
         if (event.key === "Enter") {
             sendMessage();
@@ -258,6 +262,11 @@ export const Home = (props) => {
                 <Grid item xs={12} md={12}> 
                     <AppBar position="static" color='transparent'>
                         <Toolbar>
+                           <Grid
+                            justify="space-between" 
+                            container 
+                            spacing={24}
+                        >
                         <Typography variant="h4" className={classes.title} noWrap>
                                 <span role="img" aria-label="Fox Face">Aloha! 🦊</span>
                         </Typography>
@@ -285,6 +294,16 @@ export const Home = (props) => {
                                 }
                             </Menu>
                         </div>
+                        <Grid>
+                            <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={logout}
+                            >
+                                Logout
+                            </Button>
+                        </Grid>
+                        </Grid>
                         </Toolbar>
                     </AppBar>
                 </Grid>
