@@ -1,4 +1,4 @@
-# Aloha
+# [Aloha](https://alohamessage.herokuapp.com/)
 
 Aloha! is an instant messaging application that provides service to registered users. After login, users are free to add/delete friends, initiate one to one real-time chats, start/join a group chat based on channel Id.
 
