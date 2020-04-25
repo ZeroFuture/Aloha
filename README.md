@@ -17,7 +17,7 @@ brew install mongodb-community@4.2
 2. Clone project to your local.
 
 ```
-git clone https://github.com/FreddyDoesIT/dictionary.git
+git clone https://github.com/ZeroFuture/Aloha.git
 ```
 
 3. Run MongoDB Community Edition.
