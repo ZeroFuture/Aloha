@@ -1,4 +1,4 @@
-# [Aloha](https://aloha.herokuapp.com/)
+# [Aloha](https://alohamessage.herokuapp.com/)
 
 Aloha! is an instant messaging application that provides service to registered users. After login, users are free to add/delete friends, initiate one to one real-time chats, start/join a group chat based on channel Id.
 
@@ -17,7 +17,7 @@ brew install mongodb-community@4.2
 2. Clone project to your local.
 
 ```
-git clone https://github.com/FreddyDoesIT/dictionary.git
+git clone https://github.com/ZeroFuture/Aloha.git
 ```
 
 3. Run MongoDB Community Edition.
