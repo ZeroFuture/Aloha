@@ -17,7 +17,7 @@ container.resolve(function(_, userController, channelController, friendControlle
     mongoose.set('useFindAndModify', false);
     mongoose.set('useCreateIndex', true);
     mongoose.Promise = global.Promise;
-    mongoose.connect('mongodb://localhost/aloha', {useNewUrlParser: true, useUnifiedTopology: true});
+    mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/aloha', {useNewUrlParser: true, useUnifiedTopology: true});
 
     const app = express();
     const server = http.createServer(app);
